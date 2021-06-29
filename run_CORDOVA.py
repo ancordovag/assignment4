@@ -91,8 +91,8 @@ class MainExec(object):
         token_size = data.token_size
         label_size = data.label_size
         data_size = data.data_size
-
-        print(data)
+        print("Token Size = {}".format(token_size))
+        print("Label Size = {}".format(label_size))
 
         """
         # TODO: You should declare the model here (and send it to your selected device).
