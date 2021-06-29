@@ -13,7 +13,7 @@ class SentEncoder(nn.Module):
         """
         conv_dim = configs["conv_dim"]
         self.embed = nn.Embedding.from_pretrained(pretrained_emb)
-        self.conv = nn.Conv1d(1, conv_dim,(2,2))
+        self.conv = nn.Conv1d(token_size, conv_dim,(2,2))
         self.relu = nn.ReLU
 
 
@@ -23,7 +23,8 @@ class SentEncoder(nn.Module):
         the sentence embeddings
         """
         x = self.embed(sent)
-        sent_embs = self.relu(self.conv(x))
+        x = self.conv(x)
+        sent_embs = self.relu(x)
 
         return sent_embs
 
@@ -37,7 +38,7 @@ class NLINet(nn.Module):
         """
         hidden = configs["mlp_hidden"]
         self.encoder = SentEncoder(configs, pretrained_emb, token_size, label_size)
-        self.linear = nn.Linear(hidden, 3)
+        self.linear = nn.Linear(hidden, label_size)
         self.dropbox = nn.Dropout(p=0.3)
         self.soft = nn.Softmax()
 
