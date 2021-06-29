@@ -13,7 +13,7 @@ class SentEncoder(nn.Module):
         """
         conv_dim = configs["conv_dim"]
         self.embed = nn.Embedding.from_pretrained(pretrained_emb)
-        self.conv = nn.Conv1d(token_size, conv_dim,(2))
+        self.conv = nn.Conv1d(50, conv_dim,(2))
         self.relu = nn.ReLU
 
 
