@@ -145,6 +145,8 @@ class MainExec(object):
                     """
                     optimizer.zero_grad()
                     outputs = net(premise_iter,hypothesis_iter)
+                    print("Outputs: {}".format(outputs))
+                    print("Label: {}".format(label_iter))
                     loss = loss_fn(outputs, label_iter)
                     loss_sum += loss.item()
                     loss.backward()
