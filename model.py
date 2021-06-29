@@ -40,7 +40,7 @@ class NLINet(nn.Module):
         self.encoder = SentEncoder(configs, pretrained_emb, token_size, label_size)
         self.linear1 = nn.Linear(299,hidden)
         self.linear2 = nn.Linear(hidden, label_size)
-        self.dropbox = nn.Dropout(p=0.3)
+        self.dropout = nn.Dropout(p=0.3)
         self.soft = nn.Softmax()
 
     def forward(self, premise, hypothesis):
