@@ -38,7 +38,7 @@ class NLINet(nn.Module):
         """
         hidden = configs["mlp_hidden"]
         self.encoder = SentEncoder(configs, pretrained_emb, token_size, label_size)
-        self.linear1 = nn.Linear(299,hidden)
+        self.linear1 = nn.Linear(1196,hidden)
         self.linear2 = nn.Linear(hidden, label_size)
         self.dropout = nn.Dropout(p=0.5)
         self.soft = nn.Softmax()
