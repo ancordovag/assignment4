@@ -40,7 +40,7 @@ class NLINet(nn.Module):
         self.encoder = SentEncoder(configs, pretrained_emb, token_size, label_size)
         self.linear1 = nn.Linear(299,hidden)
         self.linear2 = nn.Linear(hidden, label_size)
-        self.dropout = nn.Dropout(p=0.3)
+        self.dropout = nn.Dropout(p=0.5)
         self.soft = nn.Softmax()
 
     def forward(self, premise, hypothesis):
@@ -51,6 +51,7 @@ class NLINet(nn.Module):
         u = self.encoder(premise)
         v = self.encoder(hypothesis)
         z = torch.cat([u,v,torch.abs(u-v),u*v],dim=0)
+        print("U, V und Z".format(u.size(),v.size(),z.size()))
         x = self.linear1(z)
         x = self.dropout(x)
         x = self.linear2(x)
