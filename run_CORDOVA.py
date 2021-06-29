@@ -93,7 +93,7 @@ class MainExec(object):
         data_size = data.data_size
         #print("Token Size = {}".format(token_size))
         #print("Label Size = {}".format(label_size))
-        print("Pretrained Embed Size = {}".format(pretrained_emb.size))
+        #print("Pretrained Embed Size = {}".format(pretrained_emb.size))
 
         """
         # TODO: You should declare the model here (and send it to your selected device).

@@ -38,7 +38,8 @@ class NLINet(nn.Module):
         """
         hidden = configs["mlp_hidden"]
         self.encoder = SentEncoder(configs, pretrained_emb, token_size, label_size)
-        self.linear = nn.Linear(hidden, label_size)
+        self.linear1 = nn.Linear(299,hidden)
+        self.linear2 = nn.Linear(hidden, label_size)
         self.dropbox = nn.Dropout(p=0.3)
         self.soft = nn.Softmax()
 
@@ -50,8 +51,9 @@ class NLINet(nn.Module):
         u = self.encoder(premise)
         v = self.encoder(hypothesis)
         z = torch.cat([u,v,torch.abs(u-v),u*v],dim=0)
-        x = self.linear(z)
+        x = self.linear1(z)
         x = self.dropout(x)
+        x = self.linear2(x)
         out = self.soft(x)
 
         return out
