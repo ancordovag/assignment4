@@ -49,7 +49,7 @@ class NLINet(nn.Module):
         """
         u = self.encoder(premise)
         v = self.encoder(hypothesis)
-        z = torch.cat([u,v,torch.abs(u-y),u*v],dim=0)
+        z = torch.cat([u,v,torch.abs(u-v),u*v],dim=0)
         x = self.linear(z)
         x = self.dropout(x)
         out = self.soft(x)
