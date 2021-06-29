@@ -60,19 +60,6 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-class CNN(nn.Module):
-    def __init__(self,conv_dim,dim_linear,pretrained_embs):
-        super(CNN, self).__()
-        self.prembed = pretrained_embs
-        self.embed = nn.Embedding()
-        self.conv = nn.Conv1d(1,conv_dim,3,1)
-        self.relu = nn.Relu()
-        self.linear = nn.Linear(dim_linear,3)
-    def forward(self,x):
-        out = self.relu(self.conv(x))
-        out = self.linear(out)
-        return out
-
 class MainExec(object):
     def __init__(self, args, configs):
         self.args = args
@@ -115,11 +102,11 @@ class MainExec(object):
         For more information, see:
         https://pytorch.org/docs/stable/data.html#module-torch.utils.data .
         """
-
+        pretrained_emb_torch = torch.from_numpy(pretrained_emb)
         batch_size = self.cfgs["batch_size"]
         lr = self.cfgs["lr"]
 
-        net = NLINet(configs=self.cfgs,pretrained_emb=pretrained_emb,token_size=token_size,label_size=label_size)
+        net = NLINet(configs=self.cfgs,pretrained_emb=pretrained_emb_torch,token_size=token_size,label_size=label_size)
         loss_fn = nn.CrossEntropyLoss()
         optimizer = Adam(net.parameters(), lr=lr)
 
@@ -195,9 +182,10 @@ class MainExec(object):
         Don't forget to set the model to evaluation mode. You should also use
         `torch.utils.data.Dataloader` to load the data from Dataset object.
         """
+        pretrained_emb_torch = torch.from_numpy(pretrained_emb)
         batch_size = self.cfgs["batch_size"]
 
-        net = NLINet(configs=self.cfgs, pretrained_emb=pretrained_emb, token_size=token_size, label_size=label_size)
+        net = NLINet(configs=self.cfgs, pretrained_emb=pretrained_emb_torch, token_size=token_size, label_size=label_size)
         path = os.path.join(os.getcwd(),
                             self.model_ver,
                             'epoch' + str(self.args.CKPT_EPOCH) + '.pkl')
@@ -241,10 +229,11 @@ class MainExec(object):
         `torch.utils.data.Dataloader` to load the data from Dataset object.
         Use only a single batch to ensure your model is working correctly.
         """
+        pretrained_emb_torch = torch.from_numpy(pretrained_emb)
         batch_size = 1
         lr = self.cfgs["lr"]
 
-        net = NLINet(configs=self.cfgs, pretrained_emb=pretrained_emb, token_size=token_size, label_size=label_size)
+        net = NLINet(configs=self.cfgs, pretrained_emb=pretrained_emb_torch, token_size=token_size, label_size=label_size)
         loss_fn = nn.CrossEntropyLoss()
         optimizer = Adam(net.parameters(), lr=lr)
         dataloader = DataLoader(data, batch_size=batch_size)
