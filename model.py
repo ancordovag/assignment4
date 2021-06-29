@@ -37,8 +37,9 @@ class NLINet(nn.Module):
         encoder here.
         """
         hidden = configs["mlp_hidden"]
+        conv_dim = configs["conv_dim"]
         self.encoder = SentEncoder(configs, pretrained_emb, token_size, label_size)
-        self.linear1 = nn.Linear(1196,hidden)
+        self.linear1 = nn.Linear(1196*conv_dim,hidden)
         self.linear2 = nn.Linear(hidden, label_size)
         self.dropout = nn.Dropout(p=0.5)
         self.soft = nn.Softmax()
@@ -52,6 +53,7 @@ class NLINet(nn.Module):
         v = self.encoder(hypothesis)
         z = torch.cat([u,v,torch.abs(u-v),u*v],dim=2)
         print("U, V und Z: {}, {}, {}".format(u.size(),v.size(),z.size()))
+        z = z.view(16,-1)
         x = self.linear1(z)
         x = self.dropout(x)
         x = self.linear2(x)
