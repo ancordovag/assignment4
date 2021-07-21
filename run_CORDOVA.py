@@ -262,7 +262,7 @@ class MainExec(object):
             ) in enumerate(tepoch):
                 optimizer.zero_grad()
                 outputs = net(premise_iter, hypothesis_iter)
-                loss = loss_fn(outputs, label_iter)
+                loss = loss_fn(outputs, label_iter.squeeze(1))
                 loss_sum += loss.item()
                 loss.backward()
                 optimizer.step()
