@@ -90,9 +90,9 @@ class MainExec(object):
         token_size = data.token_size
         label_size = data.label_size
         data_size = data.data_size
-        print("Token Size = {}".format(token_size))
-        print("Label Size = {}".format(label_size))
-        print("Pretrained Embed Size = {}".format(pretrained_emb.size))
+        #print("Token Size = {}".format(token_size))
+        #print("Label Size = {}".format(label_size))
+        #print("Pretrained Embed Size = {}".format(pretrained_emb.size))
 
         """
         # TODO: You should declare the model here (and send it to your selected device).
@@ -189,7 +189,7 @@ class MainExec(object):
         batch_size = self.cfgs["batch_size"]
 
         net = NLINet(configs=self.cfgs, pretrained_emb=pretrained_emb_torch, token_size=token_size, label_size=label_size)
-        net=net.to(self.device)
+        net = net.to(self.device)
         path = os.path.join(os.getcwd(),
                             self.model_ver,
                             'epoch' + str(self.args.CKPT_EPOCH) + '.pkl')
@@ -211,7 +211,10 @@ class MainExec(object):
                     label_iter
                 ) in enumerate(tepoch):
                     outputs = net(premise_iter, hypothesis_iter)
+                    print("Outputs {}".format(outputs))
+                    print("Outputs {}".format(outputs.shape))
                     best_outs = torch.argmax(outputs)
+                    print("Best outputs {}".format(best_outs))
                     for l, o in zip(label_iter, best_outs):
                         if l == o:
                             corrects += 1
