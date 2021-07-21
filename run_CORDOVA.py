@@ -147,7 +147,7 @@ class MainExec(object):
                     outputs = net(premise_iter,hypothesis_iter)
                     #print("Outputs size: {}".format(outputs.size()))
                     #print("Label size: {}".format(label_iter.size()))
-                    loss = loss_fn(outputs, label_iter.view(batch_size))
+                    loss = loss_fn(outputs, label_iter.squeeze(1))
                     loss_sum += loss.item()
                     loss.backward()
                     optimizer.step()
