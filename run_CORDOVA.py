@@ -266,7 +266,7 @@ class MainExec(object):
                 loss_sum += loss.item()
                 loss.backward()
                 optimizer.step()
-                print(loss_sum)
+        print("Total Loss : {}".format(loss_sum))
 
         # -----------------------------------------------------------------
 
