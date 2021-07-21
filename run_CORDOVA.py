@@ -211,13 +211,13 @@ class MainExec(object):
                     label_iter
                 ) in enumerate(tepoch):
                     outputs = net(premise_iter, hypothesis_iter)
-                    print("Outputs {}".format(outputs.shape))
+                    #print("Outputs {}".format(outputs.shape))
                     best_outs = torch.argmax(outputs,1)
-                    print("Best outputs {}".format(best_outs))
+                    #print("Best outputs {}".format(best_outs))
                     for l, o in zip(label_iter, best_outs):
                         if l == o:
                             corrects += 1
-                    N += batch_size
+                        N += 1
         accuracy = corrects / N
         print(accuracy)
 
