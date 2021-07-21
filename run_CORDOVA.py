@@ -6,7 +6,6 @@ import torch
 import time
 
 from utils import Dataset
-from model import SentEncoder
 from model import NLINet
 from torch.utils.data import DataLoader
 from torch.optim import Adam
@@ -91,9 +90,9 @@ class MainExec(object):
         token_size = data.token_size
         label_size = data.label_size
         data_size = data.data_size
-        #print("Token Size = {}".format(token_size))
-        #print("Label Size = {}".format(label_size))
-        #print("Pretrained Embed Size = {}".format(pretrained_emb.size))
+        print("Token Size = {}".format(token_size))
+        print("Label Size = {}".format(label_size))
+        print("Pretrained Embed Size = {}".format(pretrained_emb.size))
 
         """
         # TODO: You should declare the model here (and send it to your selected device).
@@ -108,10 +107,11 @@ class MainExec(object):
         lr = self.cfgs["lr"]
 
         net = NLINet(configs=self.cfgs,pretrained_emb=pretrained_emb_torch,token_size=token_size,label_size=label_size)
+        net = net.to(self.device)
         loss_fn = nn.CrossEntropyLoss()
         optimizer = Adam(net.parameters(), lr=lr)
 
-        dataloader = DataLoader(data,batch_size=batch_size)
+        dataloader = DataLoader(data,batch_size=batch_size,shuffle=True)
 
         # -----------------------------------------------------------------------
 
@@ -189,10 +189,11 @@ class MainExec(object):
         batch_size = self.cfgs["batch_size"]
 
         net = NLINet(configs=self.cfgs, pretrained_emb=pretrained_emb_torch, token_size=token_size, label_size=label_size)
+        net=net.to(self.device)
         path = os.path.join(os.getcwd(),
                             self.model_ver,
                             'epoch' + str(self.args.CKPT_EPOCH) + '.pkl')
-        dataloader = DataLoader(data, batch_size=batch_size)
+        dataloader = DataLoader(data, batch_size=batch_size,shuffle=False)
 
         # Load state dict of the model
         ckpt = torch.load(path, map_location=self.device)
@@ -203,16 +204,18 @@ class MainExec(object):
         corrects = 0
         N = 0
         with tqdm(dataloader) as tepoch:
-            for step, (
+            with torch.no_grad():
+                for step, (
                     premise_iter,
                     hypothesis_iter,
                     label_iter
-            ) in enumerate(tepoch):
-                outputs = net(premise_iter, hypothesis_iter)
-                for l, o in zip(label_iter, outputs):
-                    if l == o:
-                        corrects += 1
-                N += batch_size
+                ) in enumerate(tepoch):
+                    outputs = net(premise_iter, hypothesis_iter)
+                    best_outs = torch.argmax(outputs)
+                    for l, o in zip(label_iter, best_outs):
+                        if l == o:
+                            corrects += 1
+                    N += batch_size
         accuracy = corrects / N
         print(accuracy)
 
@@ -237,6 +240,7 @@ class MainExec(object):
         lr = self.cfgs["lr"]
 
         net = NLINet(configs=self.cfgs, pretrained_emb=pretrained_emb_torch, token_size=token_size, label_size=label_size)
+        net = net.to(self.device)
         loss_fn = nn.CrossEntropyLoss()
         optimizer = Adam(net.parameters(), lr=lr)
         dataloader = DataLoader(data, batch_size=batch_size)
